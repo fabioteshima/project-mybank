@@ -1,6 +1,7 @@
 package br.com.adacourse.models;
 
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class Cliente {
 

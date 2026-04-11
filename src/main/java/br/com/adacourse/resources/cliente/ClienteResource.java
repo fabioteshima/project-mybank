@@ -1,5 +1,7 @@
 package br.com.adacourse.resources.cliente;
 
+import br.com.adacourse.dto.cliente.ClienteRequestDTO;
+import br.com.adacourse.dto.cliente.ClienteResponseDTO;
 import br.com.adacourse.models.Cliente;
 import br.com.adacourse.services.cliente.ClienteService;
 import jakarta.inject.Inject;
@@ -18,29 +20,29 @@ public class ClienteResource {
     ClienteService service;
 
     @POST
-    public Response cadastrarCliente(Cliente cliente){
-        Cliente obj = service.cadastrarCliente(cliente);
+    public Response cadastrarCliente(ClienteRequestDTO cliente){
+        ClienteResponseDTO obj = service.cadastrarCliente(cliente);
         return Response.ok(obj).build();
     }
 
     @GET
     public Response listarClientes(){
-        List<Cliente> obj = service.listarClientes();
+        List<ClienteResponseDTO> obj = service.listarClientes();
         return Response.ok(obj).build();
     }
 
     @GET
     @Path("/{id}")
     public Response buscarPorId(@PathParam("id") Long id){
-        Cliente obj = service.buscarClientePorId(id);
+        ClienteResponseDTO obj = service.buscarClientePorId(id);
         return Response.ok(obj).build();
     }
 
     @PUT
     @Path("/{id}")
-    public Response atualizarCliente(@PathParam("id") Long id, Cliente cliente){
+    public Response atualizarCliente(@PathParam("id") Long id, ClienteRequestDTO cliente){
         try {
-            Cliente obj = service.atualizarCliente(id, cliente);
+            ClienteResponseDTO obj = service.atualizarCliente(id, cliente);
             if(obj == null){
                 return Response.status(Response.Status.NOT_FOUND)
                         .entity("{\"erro\":\"Cliente não encontrado\"}")
