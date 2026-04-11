@@ -9,16 +9,18 @@ public class Conta {
     private Long id;
     private String conta;
     private TipoConta tipo;
-    private Long clienteId;
+    private Double saldo;
+    private Cliente titular;
 
     public Conta() {
     }
 
-    public Conta(Long id, String conta, TipoConta tipo, Long clienteId) {
+    public Conta(Long id, String conta, TipoConta tipo, Double saldo, Cliente titular) {
         this.id = id;
         this.conta = conta;
         this.tipo = tipo;
-        this.clienteId = clienteId;
+        this.saldo = saldo;
+        this.titular = titular;
     }
 
     public Long getId() {
@@ -45,12 +47,20 @@ public class Conta {
         this.tipo = tipo;
     }
 
-    public Long getClienteId() {
-        return clienteId;
+    public Double getSaldo() {
+        return saldo;
     }
 
-    public void setClienteId(Long clienteId) {
-        this.clienteId = clienteId;
+    public void setSaldo(Double saldo) {
+        this.saldo = saldo;
+    }
+
+    public Cliente getTitular() {
+        return titular;
+    }
+
+    public void setTitular(Cliente titular) {
+        this.titular = titular;
     }
 
     @Override
@@ -71,7 +81,8 @@ public class Conta {
                 "id=" + id +
                 ", conta='" + conta + '\'' +
                 ", tipo=" + tipo +
-                ", clienteId=" + clienteId +
+                ", saldo=" + saldo +
+                ", titular=" + titular +
                 '}';
     }
 }

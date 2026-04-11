@@ -1,7 +1,9 @@
 package br.com.adacourse;
 
+import br.com.adacourse.enums.TipoConta;
 import br.com.adacourse.models.Cliente;
-import br.com.adacourse.services.ClienteService;
+import br.com.adacourse.models.Conta;
+import br.com.adacourse.services.cliente.ClienteService;
 
 public class MainTest {
 
@@ -13,18 +15,22 @@ public class MainTest {
 
         ClienteService cs = new ClienteService();
 
-        Cliente clientCadastrado = cs.cadastrar(cliente);
+        Cliente clientCadastrado = cs.cadastrarCliente(cliente);
         System.out.println(clientCadastrado);
-        clientCadastrado = cs.cadastrar(cliente1);
+        clientCadastrado = cs.cadastrarCliente(cliente1);
         System.out.println(clientCadastrado);
-        clientCadastrado = cs.cadastrar(cliente2);
+        clientCadastrado = cs.cadastrarCliente(cliente2);
         System.out.println(clientCadastrado);
 
+        System.out.println(cs.listarClientes());
 
-//        Conta conta = new Conta(1L, "123456", TipoConta.CORRENTE, 1L);
+        Conta conta = new Conta(1L, "123456", TipoConta.CORRENTE, 0.00, cliente);
+        System.out.println(conta);
+
+
 //        Transacao transacao = new Transacao(1L, TipoTransacao.DEPOSITO, 3000.00, LocalDateTime.now(),
 //                "12345", "67890");
 
-        System.out.println(cs.listarTodos());
+
     }
 }
