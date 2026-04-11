@@ -1,10 +1,7 @@
 package br.com.adacourse.models;
 
-import jakarta.enterprise.context.ApplicationScoped;
-
 import java.util.Objects;
 
-@ApplicationScoped
 public class Cliente {
 
     private Long id;

@@ -5,5 +5,4 @@ public enum TipoConta {
     CORRENTE,
     POUPANCA,
     ELETRONICA;
-
 }
