@@ -7,7 +7,7 @@ import java.util.Objects;
 public class Conta {
 
     private Long id;
-    private String conta;
+    private String numero;
     private TipoConta tipo;
     private Double saldo;
     private Cliente titular;
@@ -15,9 +15,9 @@ public class Conta {
     public Conta() {
     }
 
-    public Conta(Long id, String conta, TipoConta tipo, Double saldo, Cliente titular) {
+    public Conta(Long id, String numero, TipoConta tipo, Double saldo, Cliente titular) {
         this.id = id;
-        this.conta = conta;
+        this.numero = numero;
         this.tipo = tipo;
         this.saldo = saldo;
         this.titular = titular;
@@ -31,12 +31,12 @@ public class Conta {
         this.id = id;
     }
 
-    public String getConta() {
-        return conta;
+    public String getNumero() {
+        return numero;
     }
 
-    public void setConta(String conta) {
-        this.conta = conta;
+    public void setNumero(String numero) {
+        this.numero = numero;
     }
 
     public TipoConta getTipo() {
@@ -79,7 +79,7 @@ public class Conta {
     public String toString() {
         return "Conta{" +
                 "id=" + id +
-                ", conta='" + conta + '\'' +
+                ", conta='" + numero + '\'' +
                 ", tipo=" + tipo +
                 ", saldo=" + saldo +
                 ", titular=" + titular +

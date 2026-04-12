@@ -9,7 +9,9 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Path("/clientes")
 @Produces(MediaType.APPLICATION_JSON)
@@ -20,35 +22,56 @@ public class ClienteResource {
     ClienteService service;
 
     @POST
-    public Response cadastrarCliente(ClienteRequestDTO cliente){
-        ClienteResponseDTO obj = service.cadastrarCliente(cliente);
-        return Response.ok(obj).build();
+    public Response cadastrarCliente(ClienteRequestDTO dto){
+        Cliente entidade = new Cliente();
+        entidade.setNome(dto.nome());
+        entidade.setCpf(dto.cpf());
+        entidade.setEmail(dto.email());
+        entidade.setSenha(dto.senha());
+
+        Cliente criado = service.cadastrarCliente(entidade);
+        ClienteResponseDTO responseDTO = ClienteResponseDTO.converterParaDTO(criado);
+        return Response.created(URI.create("/clientes/" + criado.getId())).entity(responseDTO).build();
     }
 
     @GET
     public Response listarClientes(){
-        List<ClienteResponseDTO> obj = service.listarClientes();
-        return Response.ok(obj).build();
+        List<ClienteResponseDTO> lista = service.listarClientes()
+                .stream()
+                .map(ClienteResponseDTO::converterParaDTO)
+                .collect(Collectors.toList());
+        return Response.ok(lista).build();
     }
 
     @GET
     @Path("/{id}")
-    public Response buscarPorId(@PathParam("id") Long id){
-        ClienteResponseDTO obj = service.buscarClientePorId(id);
-        return Response.ok(obj).build();
+    public Response buscarClientePorId(@PathParam("id") Long id){
+        Cliente entidade = service.buscarClientePorId(id);
+        if (entidade == null) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("{\"erro\":\"Cliente não encontrado\"}")
+                    .build();
+        }
+        return Response.ok(ClienteResponseDTO.converterParaDTO(entidade)).build();
     }
 
     @PUT
     @Path("/{id}")
-    public Response atualizarCliente(@PathParam("id") Long id, ClienteRequestDTO cliente){
+    public Response atualizarCliente(@PathParam("id") Long id, ClienteRequestDTO dto){
         try {
-            ClienteResponseDTO obj = service.atualizarCliente(id, cliente);
-            if(obj == null){
+            Cliente entidade = new Cliente();
+            entidade.setNome(dto.nome());
+            entidade.setCpf(dto.cpf());
+            entidade.setEmail(dto.email());
+            entidade.setSenha(dto.senha());
+
+            Cliente atualizado = service.atualizarCliente(id, entidade);
+            if (atualizado == null) {
                 return Response.status(Response.Status.NOT_FOUND)
                         .entity("{\"erro\":\"Cliente não encontrado\"}")
                         .build();
             }
-            return Response.ok(obj).build();
+            return Response.ok(ClienteResponseDTO.converterParaDTO(atualizado)).build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("{\"erro\":\"" + e.getMessage() + "\"}")

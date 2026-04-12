@@ -1,7 +1,5 @@
 package br.com.adacourse.services.cliente;
 
-import br.com.adacourse.dto.cliente.ClienteRequestDTO;
-import br.com.adacourse.dto.cliente.ClienteResponseDTO;
 import br.com.adacourse.models.Cliente;
 import jakarta.enterprise.context.ApplicationScoped;
 
@@ -12,50 +10,45 @@ import java.util.concurrent.atomic.AtomicLong;
 @ApplicationScoped
 public class ClienteService {
 
-//    Para teste ainda sem banco de dados
-    private static List<Cliente> clientes = new ArrayList<>();
-
+    private static final List<Cliente> clientes = new ArrayList<>();
     private static final AtomicLong numeroId = new AtomicLong();
 
-    public ClienteResponseDTO cadastrarCliente(ClienteRequestDTO cliente){
-        Cliente obj = new Cliente();
-        obj.setId(numeroId.incrementAndGet());
-        obj.setNome(cliente.nome());
-        obj.setCpf(cliente.cpf());
-        obj.setEmail(cliente.email());
-        obj.setSenha(cliente.senha());
-        clientes.add(obj);
-        return ClienteResponseDTO.converterParaDTO(obj);
+    // Recebe e retorna ENTIDADE Cliente
+    public Cliente cadastrarCliente(Cliente cliente){
+        cliente.setId(numeroId.incrementAndGet());
+        clientes.add(cliente);
+        return cliente;
     }
 
-    public List<ClienteResponseDTO> listarClientes(){
-        return clientes.stream().map(ClienteResponseDTO::converterParaDTO).toList();
+    // Retorna lista de entidades
+    public List<Cliente> listarClientes(){
+        return List.copyOf(clientes);
     }
 
-    public ClienteResponseDTO buscarClientePorId(Long id) {
+    // Buscar entidade por id
+    public Cliente buscarClientePorId(Long id) {
         return clientes.stream()
                 .filter(c -> c.getId().equals(id))
                 .findFirst()
-                .map(ClienteResponseDTO::converterParaDTO)
                 .orElse(null);
     }
 
-    public ClienteResponseDTO atualizarCliente(Long id, ClienteRequestDTO cliente){
+    // Atualizar e retornar entidade
+    public Cliente atualizarCliente(Long id, Cliente clienteAtualizado){
         return clientes.stream()
                 .filter(c -> c.getId().equals(id))
                 .findFirst()
-                .map(c -> validarEAtualizar(c, cliente))
-                .map(ClienteResponseDTO::converterParaDTO)
+                .map(c -> validarEAtualizar(c, clienteAtualizado))
                 .orElse(null);
     }
 
-    private Cliente validarEAtualizar(Cliente c, ClienteRequestDTO cliente){
-        if (cliente.cpf() != null && !cliente.cpf().equals(c.getCpf())){
+    private Cliente validarEAtualizar(Cliente existente, Cliente novo){
+        if (novo.getCpf() != null && !novo.getCpf().equals(existente.getCpf())){
             throw new IllegalArgumentException("CPF não pode ser atualizado");
         }
-        c.setNome(cliente.nome());
-        c.setEmail(cliente.email());
-        c.setSenha(cliente.senha());
-        return c;
+        if (novo.getNome() != null) existente.setNome(novo.getNome());
+        if (novo.getEmail() != null) existente.setEmail(novo.getEmail());
+        if (novo.getSenha() != null) existente.setSenha(novo.getSenha());
+        return existente;
     }
 }

@@ -1,10 +1,5 @@
 package br.com.adacourse;
 
-import br.com.adacourse.enums.TipoConta;
-import br.com.adacourse.models.Cliente;
-import br.com.adacourse.models.Conta;
-import br.com.adacourse.services.cliente.ClienteService;
-
 public class MainTest {
 
     public void main(String[] args) {
