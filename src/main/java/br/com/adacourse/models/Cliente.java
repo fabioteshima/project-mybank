@@ -1,13 +1,30 @@
 package br.com.adacourse.models;
 
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
 import java.util.Objects;
 
-public class Cliente {
+@Entity
+@Table(name = "cliente")
+public class Cliente extends PanacheEntityBase {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
     private String nome;
+
+    @Column(nullable = false, unique = true)
     private String cpf;
+
+    @Column(nullable = false)
     private String email;
+
+    @Column(nullable = false)
     private String senha;
 
     public Cliente() {

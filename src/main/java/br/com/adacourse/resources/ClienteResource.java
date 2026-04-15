@@ -1,9 +1,9 @@
-package br.com.adacourse.resources.cliente;
+package br.com.adacourse.resources;
 
 import br.com.adacourse.dto.cliente.ClienteRequestDTO;
 import br.com.adacourse.dto.cliente.ClienteResponseDTO;
 import br.com.adacourse.models.Cliente;
-import br.com.adacourse.services.cliente.ClienteService;
+import br.com.adacourse.services.ClienteService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;

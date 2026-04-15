@@ -10,13 +10,13 @@ public class Transacao {
     private TipoTransacao tipo;
     private Double valor;
     private LocalDateTime dataHora;
-    private String conta_origem_id;
-    private String conta_destino_id;
+    private Conta conta_origem_id;
+    private Conta conta_destino_id;
 
     public Transacao() {
     }
 
-    public Transacao(Long id, TipoTransacao tipo, Double valor, LocalDateTime dataHora, String conta_origem_id, String conta_destino_id) {
+    public Transacao(Long id, TipoTransacao tipo, Double valor, LocalDateTime dataHora, Conta conta_origem_id, Conta conta_destino_id) {
         this.id = id;
         this.tipo = tipo;
         this.valor = valor;
@@ -57,19 +57,19 @@ public class Transacao {
         this.dataHora = dataHora;
     }
 
-    public String getConta_origem_id() {
+    public Conta getConta_origem_id() {
         return conta_origem_id;
     }
 
-    public void setConta_origem_id(String conta_origem_id) {
+    public void setConta_origem_id(Conta conta_origem_id) {
         this.conta_origem_id = conta_origem_id;
     }
 
-    public String getConta_destino_id() {
+    public Conta getConta_destino_id() {
         return conta_destino_id;
     }
 
-    public void setConta_destino_id(String conta_destino_id) {
+    public void setConta_destino_id(Conta conta_destino_id) {
         this.conta_destino_id = conta_destino_id;
     }
 
