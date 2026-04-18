@@ -3,6 +3,7 @@ package br.com.adacourse.resources;
 import br.com.adacourse.dto.cliente.ClienteCreateDTO;
 import br.com.adacourse.dto.cliente.ClienteResponseDTO;
 import br.com.adacourse.dto.cliente.ClienteUpdateDTO;
+import br.com.adacourse.enums.TipoCliente;
 import br.com.adacourse.models.Cliente;
 import br.com.adacourse.services.ClienteService;
 import jakarta.annotation.security.PermitAll;
@@ -33,7 +34,7 @@ public class ClienteResource {
         entidade.setCpf(dto.cpf());
         entidade.setEmail(dto.email());
         entidade.setSenha(dto.senha());
-        entidade.setRole("CLIENTE");
+        entidade.setRole(TipoCliente.CLIENTE);
 
         Cliente criado = service.cadastrarCliente(entidade);
         ClienteResponseDTO responseDTO = ClienteResponseDTO.converterParaDTO(criado);

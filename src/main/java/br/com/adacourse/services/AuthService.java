@@ -17,7 +17,7 @@ public class AuthService {
         }
         return Jwt.issuer("adacourse")
                 .upn(entidade.getEmail())
-                .groups(entidade.getRole())
+                .groups(entidade.getRole().toString())
                 .sign();
     }
 }

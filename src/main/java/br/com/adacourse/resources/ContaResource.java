@@ -1,16 +1,23 @@
 package br.com.adacourse.resources;
 
+import br.com.adacourse.dto.conta.ContaResponseDTO;
+import br.com.adacourse.services.ContaService;
+import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Path("/contas")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class ContaResource {
 
-//    @Inject
-//    ContaService service;
-//
+    @Inject
+    ContaService service;
+
 //    @POST
 //    public Response criarConta(ContaRequestDTO dto){
 //        try {
@@ -32,14 +39,14 @@ public class ContaResource {
 //        }
 //    }
 //
-//    @GET
-//    public Response listarContas(){
-//        List<ContaResponseDTO> lista = service.listarContas()
-//                .stream()
-//                .map(ContaResponseDTO::converteParaDTO)
-//                .collect(Collectors.toList());
-//        return Response.ok(lista).build();
-//    }
+    @GET
+    public Response listarContas(){
+        List<ContaResponseDTO> lista = service.listarContas()
+                .stream()
+                .map(ContaResponseDTO::converteParaDTO)
+                .collect(Collectors.toList());
+        return Response.ok(lista).build();
+    }
 //
 //    @Path("/{id}")
 //    @GET

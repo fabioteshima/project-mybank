@@ -14,6 +14,8 @@ import jakarta.ws.rs.core.Response;
 import java.util.Map;
 
 @Path("/auth")
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
 public class AuthResource {
 
     @Inject
@@ -21,11 +23,8 @@ public class AuthResource {
 
     @POST
     @Path("/login")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
     public Response login(@Valid AuthCreateDTO dto){
         String token = service.autenticacao(dto.email(), dto.senha());
         return Response.ok(Map.of("token", token)).build();
     }
-
 }

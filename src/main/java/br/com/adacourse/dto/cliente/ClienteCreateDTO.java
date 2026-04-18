@@ -15,8 +15,6 @@ public record ClienteCreateDTO(
         String email,
 
         @NotBlank(message = "Senha é obrigatória")
-        String senha,
-
-        String role
+        String senha
 ) {}
 

@@ -1,5 +1,6 @@
 package br.com.adacourse.models;
 
+import br.com.adacourse.enums.TipoCliente;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 
@@ -19,19 +20,20 @@ public class Cliente extends PanacheEntityBase {
     @Column(nullable = false, unique = true)
     private String cpf;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Column(nullable = false)
     private String senha;
 
     @Column(nullable = false)
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private TipoCliente role;
 
     public Cliente() {
     }
 
-    public Cliente(Long id, String nome, String cpf, String email, String senha, String role) {
+    public Cliente(Long id, String nome, String cpf, String email, String senha, TipoCliente role) {
         this.id = id;
         this.nome = nome;
         this.cpf = cpf;
@@ -80,11 +82,11 @@ public class Cliente extends PanacheEntityBase {
         this.senha = senha;
     }
 
-    public String getRole() {
+    public TipoCliente getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(TipoCliente role) {
         this.role = role;
     }
 

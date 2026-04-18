@@ -1,25 +1,37 @@
 package br.com.adacourse.models;
 
 import br.com.adacourse.enums.TipoConta;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import jakarta.persistence.*;
 
 import java.util.Objects;
 
-public class Conta {
+@Entity
+@Table(name = "conta")
+public class Conta extends PanacheEntityBase {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false, unique = true)
     private String numero;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private TipoConta tipo;
-    private Double saldo;
+
+    @OneToOne
+    @JoinColumn(name = "cliente_id", referencedColumnName = "id", nullable = false)
     private Cliente titular;
 
     public Conta() {
     }
 
-    public Conta(Long id, String numero, TipoConta tipo, Double saldo, Cliente titular) {
+    public Conta(Long id, String numero, TipoConta tipo, Cliente titular) {
         this.id = id;
         this.numero = numero;
         this.tipo = tipo;
-        this.saldo = saldo;
         this.titular = titular;
     }
 
@@ -47,14 +59,6 @@ public class Conta {
         this.tipo = tipo;
     }
 
-    public Double getSaldo() {
-        return saldo;
-    }
-
-    public void setSaldo(Double saldo) {
-        this.saldo = saldo;
-    }
-
     public Cliente getTitular() {
         return titular;
     }
@@ -73,16 +77,5 @@ public class Conta {
     @Override
     public int hashCode() {
         return Objects.hashCode(id);
-    }
-
-    @Override
-    public String toString() {
-        return "Conta{" +
-                "id=" + id +
-                ", conta='" + numero + '\'' +
-                ", tipo=" + tipo +
-                ", saldo=" + saldo +
-                ", titular=" + titular +
-                '}';
     }
 }
