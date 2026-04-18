@@ -1,22 +1,12 @@
-package br.com.adacourse.dto.cliente;
+package br.com.adacourse.dto.auth;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
-public record ClienteCreateDTO(
-        @NotBlank(message = "Nome é obrigatório")
-        String nome,
-
-        @NotBlank(message = "CPF é obrigatório")
-        String cpf,
-
+public record AuthCreateDTO(
         @NotBlank(message = "Email é obrigatório")
         @Email(message = "Email inválido")
         String email,
-
         @NotBlank(message = "Senha é obrigatória")
-        String senha,
-
-        String role
+        String senha
 ) {}
-

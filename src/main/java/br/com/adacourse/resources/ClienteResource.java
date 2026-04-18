@@ -5,6 +5,8 @@ import br.com.adacourse.dto.cliente.ClienteResponseDTO;
 import br.com.adacourse.dto.cliente.ClienteUpdateDTO;
 import br.com.adacourse.models.Cliente;
 import br.com.adacourse.services.ClienteService;
+import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
@@ -24,12 +26,14 @@ public class ClienteResource {
     ClienteService service;
 
     @POST
+    @RolesAllowed("GERENTE")
     public Response cadastrarCliente(@Valid ClienteCreateDTO dto){
         Cliente entidade = new Cliente();
         entidade.setNome(dto.nome());
         entidade.setCpf(dto.cpf());
         entidade.setEmail(dto.email());
         entidade.setSenha(dto.senha());
+        entidade.setRole("CLIENTE");
 
         Cliente criado = service.cadastrarCliente(entidade);
         ClienteResponseDTO responseDTO = ClienteResponseDTO.converterParaDTO(criado);
@@ -37,6 +41,7 @@ public class ClienteResource {
     }
 
     @GET
+    @PermitAll
     public Response listarClientes(){
         List<ClienteResponseDTO> lista = service.listarClientes()
                 .stream()
@@ -47,6 +52,7 @@ public class ClienteResource {
 
     @GET
     @Path("/{id}")
+    @PermitAll
     public Response buscarClientePorId(@PathParam("id") Long id){
         Cliente entidade = service.buscarClientePorId(id);
         if (entidade == null) {
@@ -59,6 +65,7 @@ public class ClienteResource {
 
     @PUT
     @Path("/{id}")
+    @RolesAllowed("GERENTE")
     public Response atualizarCliente(@PathParam("id") Long id, @Valid ClienteUpdateDTO dto) {
         try {
             Cliente entidade = new Cliente();

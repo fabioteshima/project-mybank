@@ -25,15 +25,19 @@ public class Cliente extends PanacheEntityBase {
     @Column(nullable = false)
     private String senha;
 
+    @Column(nullable = false)
+    private String role;
+
     public Cliente() {
     }
 
-    public Cliente(Long id, String nome, String cpf, String email, String senha) {
+    public Cliente(Long id, String nome, String cpf, String email, String senha, String role) {
         this.id = id;
         this.nome = nome;
         this.cpf = cpf;
         this.email = email;
         this.senha = senha;
+        this.role = role;
     }
 
     public Long getId() {
@@ -74,6 +78,14 @@ public class Cliente extends PanacheEntityBase {
 
     public void setSenha(String senha) {
         this.senha = senha;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     @Override
