@@ -2,8 +2,6 @@ package br.com.adacourse.models;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 
 import java.util.Objects;
 
@@ -88,16 +86,5 @@ public class Cliente extends PanacheEntityBase {
     @Override
     public int hashCode() {
         return Objects.hashCode(id);
-    }
-
-    @Override
-    public String toString() {
-        return "Cliente{" +
-                "id=" + id +
-                ", nome='" + nome + '\'' +
-                ", cpf='" + cpf + '\'' +
-                ", email='" + email + '\'' +
-                ", senha='" + senha + '\'' +
-                '}';
     }
 }

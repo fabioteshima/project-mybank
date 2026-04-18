@@ -3,7 +3,7 @@ package br.com.adacourse.dto.cliente;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
-public record ClienteRequestDTO(
+public record ClienteCreateDTO(
         @NotBlank(message = "Nome é obrigatório")
         String nome,
 
@@ -16,7 +16,5 @@ public record ClienteRequestDTO(
 
         @NotBlank(message = "Senha é obrigatória")
         String senha
-) {
-
-}
+) {}
 

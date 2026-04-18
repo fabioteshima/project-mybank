@@ -1,10 +1,12 @@
 package br.com.adacourse.resources;
 
-import br.com.adacourse.dto.cliente.ClienteRequestDTO;
+import br.com.adacourse.dto.cliente.ClienteCreateDTO;
 import br.com.adacourse.dto.cliente.ClienteResponseDTO;
+import br.com.adacourse.dto.cliente.ClienteUpdateDTO;
 import br.com.adacourse.models.Cliente;
 import br.com.adacourse.services.ClienteService;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -22,7 +24,7 @@ public class ClienteResource {
     ClienteService service;
 
     @POST
-    public Response cadastrarCliente(ClienteRequestDTO dto){
+    public Response cadastrarCliente(@Valid ClienteCreateDTO dto){
         Cliente entidade = new Cliente();
         entidade.setNome(dto.nome());
         entidade.setCpf(dto.cpf());
@@ -57,11 +59,10 @@ public class ClienteResource {
 
     @PUT
     @Path("/{id}")
-    public Response atualizarCliente(@PathParam("id") Long id, ClienteRequestDTO dto){
+    public Response atualizarCliente(@PathParam("id") Long id, @Valid ClienteUpdateDTO dto) {
         try {
             Cliente entidade = new Cliente();
             entidade.setNome(dto.nome());
-            entidade.setCpf(dto.cpf());
             entidade.setEmail(dto.email());
             entidade.setSenha(dto.senha());
 
