@@ -33,11 +33,8 @@ public class ContaService {
         return Conta.listAll();
     }
 
-//    public Conta buscarContaPorId(Long id){
-//        return contas.stream()
-//                .filter(c -> c.getId().equals(id))
-//                .findFirst()
-//                .orElse(null);
-////    }
+    public Conta buscarContaPorId(Long id){
+        return Conta.findById(id);
+    }
 }
 

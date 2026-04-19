@@ -1,7 +1,9 @@
 package br.com.adacourse.resources;
 
 import br.com.adacourse.dto.conta.ContaResponseDTO;
+import br.com.adacourse.models.Conta;
 import br.com.adacourse.services.ContaService;
+import jakarta.annotation.security.PermitAll;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -40,6 +42,7 @@ public class ContaResource {
 //    }
 //
     @GET
+    @PermitAll
     public Response listarContas(){
         List<ContaResponseDTO> lista = service.listarContas()
                 .stream()
@@ -47,17 +50,17 @@ public class ContaResource {
                 .collect(Collectors.toList());
         return Response.ok(lista).build();
     }
-//
-//    @Path("/{id}")
-//    @GET
-//    public Response buscarContaPorId(@PathParam("id") Long id){
-//        Conta entidade = service.buscarContaPorId(id);
-//        if (entidade == null) {
-//            return Response.status(Response.Status.NOT_FOUND)
-//                    .entity("{\"erro\":\"Conta não encontrada\"}")
-//                    .build();
-//        }
-//        ContaResponseDTO responseDTO = ContaResponseDTO.converteParaDTO(entidade);
-//        return Response.ok(responseDTO).build();
-//    }
+
+    @GET
+    @Path("/{id}")
+    @PermitAll
+    public Response buscarContaPorId(@PathParam("id") Long id){
+        Conta entidade = service.buscarContaPorId(id);
+        if(entidade == null){
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("{\"erro\":\"Conta não encontrada\"}")
+                    .build();
+        }
+        return Response.ok(ContaResponseDTO.converteParaDTO(entidade)).build();
+    }
 }
