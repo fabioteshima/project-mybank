@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 public record TransacaoResponseDTO(Long id, TipoTransacao tipo, Double valor, LocalDateTime dataHora){
 
-    public TransacaoResponseDTO converterParaDTO(Transacao transacao){
+    public static TransacaoResponseDTO converterParaDTO(Transacao transacao){
         return new TransacaoResponseDTO(
                 transacao.getId(),
                 transacao.getTipo(),

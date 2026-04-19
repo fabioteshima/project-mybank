@@ -4,6 +4,8 @@ import br.com.adacourse.enums.TipoConta;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -24,6 +26,12 @@ public class Conta extends PanacheEntityBase {
     @OneToOne
     @JoinColumn(name = "cliente_id", referencedColumnName = "id", nullable = false)
     private Cliente titular;
+
+    @OneToMany(mappedBy = "contaOrigem")
+    private List<Transacao> transacoesOrigem = new ArrayList<>();
+
+    @OneToMany(mappedBy = "contaDestino")
+    private List<Transacao> transacaosDestino = new ArrayList<>();
 
     public Conta() {
     }
@@ -65,6 +73,22 @@ public class Conta extends PanacheEntityBase {
 
     public void setTitular(Cliente titular) {
         this.titular = titular;
+    }
+
+    public List<Transacao> getTransacoesOrigem() {
+        return transacoesOrigem;
+    }
+
+    public void setTransacoesOrigem(List<Transacao> transacoesOrigem) {
+        this.transacoesOrigem = transacoesOrigem;
+    }
+
+    public List<Transacao> getTransacaosDestino() {
+        return transacaosDestino;
+    }
+
+    public void setTransacaosDestino(List<Transacao> transacaosDestino) {
+        this.transacaosDestino = transacaosDestino;
     }
 
     @Override

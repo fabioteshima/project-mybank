@@ -1,17 +1,33 @@
 package br.com.adacourse.models;
 
 import br.com.adacourse.enums.TipoTransacao;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
-public class Transacao {
+@Entity
+public class Transacao extends PanacheEntityBase {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Enumerated(EnumType.STRING)
     private TipoTransacao tipo;
+
     private Double valor;
+
+    @Column(name = "data_hora")
     private LocalDateTime dataHora;
-    private Conta conta_origem_id;
-    private Conta conta_destino_id;
+
+    @ManyToOne
+    @JoinColumn(name = "conta_origem_id")
+    private Conta contaOrigem;
+
+    @ManyToOne
+    @JoinColumn(name = "conta_destino_id")
+    private Conta contaDestino;
 
     public Transacao() {
     }
@@ -21,8 +37,8 @@ public class Transacao {
         this.tipo = tipo;
         this.valor = valor;
         this.dataHora = dataHora;
-        this.conta_origem_id = conta_origem_id;
-        this.conta_destino_id = conta_destino_id;
+        this.contaOrigem = conta_origem_id;
+        this.contaDestino = conta_destino_id;
     }
 
     public Long getId() {
@@ -57,31 +73,19 @@ public class Transacao {
         this.dataHora = dataHora;
     }
 
-    public Conta getConta_origem_id() {
-        return conta_origem_id;
+    public Conta getContaOrigem() {
+        return contaOrigem;
     }
 
-    public void setConta_origem_id(Conta conta_origem_id) {
-        this.conta_origem_id = conta_origem_id;
+    public void setContaOrigem(Conta contaOrigem) {
+        this.contaOrigem = contaOrigem;
     }
 
-    public Conta getConta_destino_id() {
-        return conta_destino_id;
+    public Conta getContaDestino() {
+        return contaDestino;
     }
 
-    public void setConta_destino_id(Conta conta_destino_id) {
-        this.conta_destino_id = conta_destino_id;
-    }
-
-    @Override
-    public String toString() {
-        return "Transacao{" +
-                "id=" + id +
-                ", tipo='" + tipo + '\'' +
-                ", valor=" + valor +
-                ", dataHora=" + dataHora +
-                ", conta_origem_id='" + conta_origem_id + '\'' +
-                ", conta_destino_id='" + conta_destino_id + '\'' +
-                '}';
+    public void setContaDestino(Conta contaDestino) {
+        this.contaDestino = contaDestino;
     }
 }

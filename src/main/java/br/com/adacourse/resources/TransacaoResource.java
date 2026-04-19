@@ -17,20 +17,20 @@ public class TransacaoResource {
     @Inject
     TransacaoService service;
 
-    @POST
-    public Response cadastrarTransacao(TransacaoRequestDTO dto){
-        Transacao entidade = new Transacao();
-        entidade.setTipo(dto.tipo());
-
-
-        // Continuar aqui......
-
-
-        return null;
-    }
+//    @POST
+//    public Response cadastrarTransacao(TransacaoRequestDTO dto){
+//        Transacao entidade = new Transacao();
+//        entidade.setTipo(dto.tipo());
+//
+//
+//        // Continuar aqui......
+//
+//
+//        return null;
+//    }
 
     @GET
     public Response listarTransacoes(Transacao transacao){
-        return Response.ok().build();
+        return Response.ok(transacao).build();
     }
 }
