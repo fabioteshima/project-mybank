@@ -1,14 +1,19 @@
 package br.com.adacourse.resources;
 
+import br.com.adacourse.dto.conta.ContaCreateDTO;
 import br.com.adacourse.dto.conta.ContaResponseDTO;
+import br.com.adacourse.models.Cliente;
 import br.com.adacourse.models.Conta;
 import br.com.adacourse.services.ContaService;
 import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,27 +25,28 @@ public class ContaResource {
     @Inject
     ContaService service;
 
-//    @POST
-//    public Response criarConta(ContaRequestDTO dto){
-//        try {
-//            Conta entidade = new Conta();
-//            entidade.setNumero(dto.numero());
-//            entidade.setTipo(dto.tipo());
-//            entidade.setSaldo(dto.saldo());
-//            Cliente titular = new Cliente();
-//            titular.setId(dto.cliente().id());
-//            entidade.setTitular(titular);
-//
-//            Conta criada = service.criarConta(entidade);
-//            ContaResponseDTO responseDTO = ContaResponseDTO.converteParaDTO(criada);
-//            return Response.created(URI.create("/contas/" + criada.getId())).entity(responseDTO).build();
-//        } catch (IllegalArgumentException e) {
-//            return Response.status(Response.Status.BAD_REQUEST)
-//                    .entity("{\"erro\":\"" + e.getMessage() + "\"}")
-//                    .build();
-//        }
-//    }
-//
+    @POST
+    @RolesAllowed("GERENTE")
+    public Response criarConta(@Valid ContaCreateDTO dto){
+        try {
+            Conta entidade = new Conta();
+            entidade.setTipo(dto.tipo());
+
+            Cliente titular = new Cliente();
+            titular.setId(dto.cliente().id());
+
+            entidade.setTitular(titular);
+
+            Conta criada = service.criarConta(entidade);
+            ContaResponseDTO responseDTO = ContaResponseDTO.converteParaDTO(criada);
+            return Response.created(URI.create("/contas/" + criada.getId())).entity(responseDTO).build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("{\"erro\":\"" + e.getMessage() + "\"}")
+                    .build();
+        }
+    }
+
     @GET
     @PermitAll
     public Response listarContas(){

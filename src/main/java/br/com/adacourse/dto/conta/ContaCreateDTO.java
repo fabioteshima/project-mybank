@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 
 public record ContaCreateDTO(
 
-        @NotBlank(message = "Tipo da conta é necessário")
+        @NotNull(message = "Tipo da conta é necessário")
         TipoConta tipo,
 
         @NotNull
