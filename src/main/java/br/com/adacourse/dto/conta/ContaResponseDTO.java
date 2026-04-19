@@ -1,7 +1,8 @@
 package br.com.adacourse.dto.conta;
 
 import br.com.adacourse.dto.cliente.ClienteResponseDTO;
-import br.com.adacourse.dto.transacao.TransacaoResponseDTO;
+import br.com.adacourse.dto.transacao.TransacaoResponseDetalhadoDTO;
+import br.com.adacourse.dto.transacao.TransacaoResponseResumidoDTO;
 import br.com.adacourse.enums.TipoConta;
 import br.com.adacourse.models.Conta;
 
@@ -14,13 +15,13 @@ public record ContaResponseDTO(
         String numero,
         TipoConta tipo,
         ClienteResponseDTO titular,
-        List<TransacaoResponseDTO> transacoes) {
+        List<TransacaoResponseResumidoDTO> transacoes) {
 
     public static ContaResponseDTO converteParaDTO(Conta conta){
-        List<TransacaoResponseDTO> todasTransacoes = Stream.concat(
+        List<TransacaoResponseResumidoDTO> todasTransacoes = Stream.concat(
                 conta.getTransacoesOrigem().stream(),
                 conta.getTransacaosDestino().stream())
-                .map(TransacaoResponseDTO::converterParaDTO)
+                .map(TransacaoResponseResumidoDTO::converterParaDTO)
                 .collect(Collectors.toList());
 
         return new ContaResponseDTO(

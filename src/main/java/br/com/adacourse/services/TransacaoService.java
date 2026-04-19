@@ -2,10 +2,11 @@ package br.com.adacourse.services;
 
 import br.com.adacourse.models.Transacao;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 @ApplicationScoped
 public class TransacaoService {
@@ -22,7 +23,11 @@ public class TransacaoService {
 //        return entidade;
 //    }
 
-    public List<Transacao> consultaTransacao(){
+    public List<Transacao> listarTransacoes(){
         return Transacao.listAll();
+    }
+
+    public Transacao buscarTransacaoPorId(Long id){
+      return Transacao.findById(id);
     }
 }

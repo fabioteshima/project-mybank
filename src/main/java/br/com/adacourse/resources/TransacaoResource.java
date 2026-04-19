@@ -1,13 +1,16 @@
 package br.com.adacourse.resources;
 
-
-import br.com.adacourse.dto.transacao.TransacaoRequestDTO;
+import br.com.adacourse.dto.transacao.TransacaoResponseDetalhadoDTO;
 import br.com.adacourse.models.Transacao;
 import br.com.adacourse.services.TransacaoService;
+import jakarta.annotation.security.PermitAll;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Path("/transacoes")
 @Produces(MediaType.APPLICATION_JSON)
@@ -30,7 +33,24 @@ public class TransacaoResource {
 //    }
 
     @GET
-    public Response listarTransacoes(Transacao transacao){
-        return Response.ok(transacao).build();
+    @PermitAll
+    public Response listarTransacoes(){
+        List<TransacaoResponseDetalhadoDTO> transacoes = service.listarTransacoes().stream()
+                .map(TransacaoResponseDetalhadoDTO::converterParaDTO)
+                .collect(Collectors.toList());
+        return Response.ok(transacoes).build();
+    }
+
+    @GET
+    @Path("/{id}")
+    @PermitAll
+    public Response buscarTransacaoPorId(@PathParam("id") Long id){
+        Transacao entidade = service.buscarTransacaoPorId(id);
+        if(entidade == null){
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("{\"erro\":\"Transação não encontrada\"}")
+                    .build();
+        }
+        return Response.ok(TransacaoResponseDetalhadoDTO.converterParaDTO(entidade)).build();
     }
 }
