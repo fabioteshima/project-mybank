@@ -33,6 +33,17 @@ public class Conta extends PanacheEntityBase {
     @OneToMany(mappedBy = "contaDestino")
     private List<Transacao> transacoesDestino = new ArrayList<>();
 
+    @Transient
+    public Double getSaldo() {
+        double saidas = transacoesOrigem.stream()
+                .mapToDouble(Transacao::getValor)
+                .sum();
+        double entradas = transacoesDestino.stream()
+                .mapToDouble(Transacao::getValor)
+                .sum();
+        return entradas - saidas;
+    }
+
     public Conta() {
     }
 

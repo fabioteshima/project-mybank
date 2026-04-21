@@ -17,7 +17,7 @@ public record ContaResponseDTO(
         ClienteResponseDTO titular,
         List<TransacaoResponseResumidoDTO> transacoes) {
 
-    public static ContaResponseDTO converteParaDTO(Conta conta, Double saldo){
+    public static ContaResponseDTO converteParaDTO(Conta conta){
         List<TransacaoResponseResumidoDTO> todasTransacoes = Stream.concat(
                 conta.getTransacoesOrigem().stream(),
                 conta.getTransacoesDestino().stream())
@@ -28,7 +28,7 @@ public record ContaResponseDTO(
                 conta.getId(),
                 conta.getNumero(),
                 conta.getTipo(),
-                saldo,
+                conta.getSaldo(),
                 ClienteResponseDTO.converterParaDTO(conta.getTitular()),
                 todasTransacoes
         );

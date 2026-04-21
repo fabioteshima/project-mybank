@@ -37,8 +37,7 @@ public class ContaResource {
             entidade.setTitular(titular);
 
             Conta criada = contaService.criarConta(entidade);
-            Double saldo = contaService.calcularSaldo(criada);
-            ContaResponseDTO responseDTO = contaService.converterParaDTOComSaldo(criada);
+            ContaResponseDTO responseDTO = ContaResponseDTO.converteParaDTO(criada);
             return Response.created(URI.create("/contas/" + criada.getId())).entity(responseDTO).build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST)
@@ -52,7 +51,7 @@ public class ContaResource {
     public Response listarContas(){
         List<ContaResponseDTO> lista = contaService.listarContas()
                 .stream()
-                .map(conta -> ContaResponseDTO.converteParaDTO(conta, contaService.calcularSaldo(conta)))
+                .map(ContaResponseDTO::converteParaDTO)
                 .collect(Collectors.toList());
         return Response.ok(lista).build();
     }
@@ -67,14 +66,12 @@ public class ContaResource {
                     .entity("{\"erro\":\"Conta Id não encontrada\"}")
                     .build();
         }
-        Double saldo = contaService.calcularSaldo(entidade);
-
         String usuarioLogado = sc.getUserPrincipal().getName();
         if (sc.isUserInRole("GERENTE")) {
-            return Response.ok(contaService.converterParaDTOComSaldo(entidade)).build();
+            return Response.ok(ContaResponseDTO.converteParaDTO(entidade)).build();
         }
         if (sc.isUserInRole("CLIENTE") && entidade.getTitular().getEmail().equals(usuarioLogado)) {
-            return Response.ok(contaService.converterParaDTOComSaldo(entidade)).build();
+            return Response.ok(ContaResponseDTO.converteParaDTO(entidade)).build();
         }
         return Response.status(Response.Status.FORBIDDEN)
                 .entity("{\"erro\":\"Acesso não autorizado\"}")
