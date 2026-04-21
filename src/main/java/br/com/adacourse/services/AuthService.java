@@ -7,6 +7,8 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 import org.mindrot.jbcrypt.BCrypt;
 
+import java.time.Instant;
+
 @ApplicationScoped
 public class AuthService {
 
@@ -18,6 +20,7 @@ public class AuthService {
         return Jwt.issuer("adacourse")
                 .upn(entidade.getEmail())
                 .groups(entidade.getRole().toString())
+                .expiresAt(Instant.now().plusSeconds(1800))
                 .sign();
     }
 }

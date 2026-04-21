@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 public class ClienteResource {
 
     @Inject
-    ClienteService service;
+    ClienteService clienteService;
 
     @POST
     @RolesAllowed("GERENTE")
@@ -37,7 +37,7 @@ public class ClienteResource {
         entidade.setSenha(dto.senha());
         entidade.setRole(TipoCliente.CLIENTE);
 
-        Cliente criado = service.cadastrarCliente(entidade);
+        Cliente criado = clienteService.cadastrarCliente(entidade);
         ClienteResponseDTO responseDTO = ClienteResponseDTO.converterParaDTO(criado);
         return Response.created(URI.create("/clientes/" + criado.getId())).entity(responseDTO).build();
     }
@@ -45,7 +45,7 @@ public class ClienteResource {
     @GET
     @RolesAllowed("GERENTE")
     public Response listarClientes(){
-        List<ClienteResponseDTO> lista = service.listarClientes()
+        List<ClienteResponseDTO> lista = clienteService.listarClientes()
                 .stream()
                 .map(ClienteResponseDTO::converterParaDTO)
                 .collect(Collectors.toList());
@@ -56,7 +56,7 @@ public class ClienteResource {
     @Path("/{id}")
     @RolesAllowed("GERENTE")
     public Response buscarClientePorId(@PathParam("id") Long id){
-        Cliente entidade = service.buscarClientePorId(id);
+        Cliente entidade = clienteService.buscarClientePorId(id);
         if (entidade == null) {
             return Response.status(Response.Status.NOT_FOUND)
                     .entity("{\"erro\":\"Cliente não encontrado\"}")
@@ -75,7 +75,7 @@ public class ClienteResource {
             entidade.setEmail(dto.email());
             entidade.setSenha(dto.senha());
 
-            Cliente atualizado = service.atualizarCliente(id, entidade);
+            Cliente atualizado = clienteService.atualizarCliente(id, entidade);
             if (atualizado == null) {
                 return Response.status(Response.Status.NOT_FOUND)
                         .entity("{\"erro\":\"Cliente Id não encontrado\"}")

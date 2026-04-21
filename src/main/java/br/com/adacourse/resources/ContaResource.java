@@ -5,7 +5,6 @@ import br.com.adacourse.dto.conta.ContaResponseDTO;
 import br.com.adacourse.models.Cliente;
 import br.com.adacourse.models.Conta;
 import br.com.adacourse.services.ContaService;
-import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
@@ -25,7 +24,7 @@ import java.util.stream.Collectors;
 public class ContaResource {
 
     @Inject
-    ContaService service;
+    ContaService contaService;
 
     @POST
     @RolesAllowed("GERENTE")
@@ -33,14 +32,13 @@ public class ContaResource {
         try {
             Conta entidade = new Conta();
             entidade.setTipo(dto.tipo());
-
             Cliente titular = new Cliente();
             titular.setId(dto.cliente().id());
-
             entidade.setTitular(titular);
 
-            Conta criada = service.criarConta(entidade);
-            ContaResponseDTO responseDTO = ContaResponseDTO.converteParaDTO(criada);
+            Conta criada = contaService.criarConta(entidade);
+            Double saldo = contaService.calcularSaldo(criada);
+            ContaResponseDTO responseDTO = contaService.converterParaDTOComSaldo(criada);
             return Response.created(URI.create("/contas/" + criada.getId())).entity(responseDTO).build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST)
@@ -52,9 +50,9 @@ public class ContaResource {
     @GET
     @RolesAllowed("GERENTE")
     public Response listarContas(){
-        List<ContaResponseDTO> lista = service.listarContas()
+        List<ContaResponseDTO> lista = contaService.listarContas()
                 .stream()
-                .map(ContaResponseDTO::converteParaDTO)
+                .map(conta -> ContaResponseDTO.converteParaDTO(conta, contaService.calcularSaldo(conta)))
                 .collect(Collectors.toList());
         return Response.ok(lista).build();
     }
@@ -63,18 +61,20 @@ public class ContaResource {
     @Path("/{id}")
     @RolesAllowed({"GERENTE", "CLIENTE"})
     public Response buscarContaPorId(@PathParam("id") Long id, @Context SecurityContext sc){
-        Conta entidade = service.buscarContaPorId(id);
+        Conta entidade = contaService.buscarContaPorId(id);
         if(entidade == null){
             return Response.status(Response.Status.NOT_FOUND)
                     .entity("{\"erro\":\"Conta Id não encontrada\"}")
                     .build();
         }
+        Double saldo = contaService.calcularSaldo(entidade);
+
         String usuarioLogado = sc.getUserPrincipal().getName();
         if (sc.isUserInRole("GERENTE")) {
-            return Response.ok(ContaResponseDTO.converteParaDTO(entidade)).build();
+            return Response.ok(contaService.converterParaDTOComSaldo(entidade)).build();
         }
         if (sc.isUserInRole("CLIENTE") && entidade.getTitular().getEmail().equals(usuarioLogado)) {
-            return Response.ok(ContaResponseDTO.converteParaDTO(entidade)).build();
+            return Response.ok(contaService.converterParaDTOComSaldo(entidade)).build();
         }
         return Response.status(Response.Status.FORBIDDEN)
                 .entity("{\"erro\":\"Acesso não autorizado\"}")

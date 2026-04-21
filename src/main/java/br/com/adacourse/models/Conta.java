@@ -31,7 +31,7 @@ public class Conta extends PanacheEntityBase {
     private List<Transacao> transacoesOrigem = new ArrayList<>();
 
     @OneToMany(mappedBy = "contaDestino")
-    private List<Transacao> transacaosDestino = new ArrayList<>();
+    private List<Transacao> transacoesDestino = new ArrayList<>();
 
     public Conta() {
     }
@@ -83,12 +83,12 @@ public class Conta extends PanacheEntityBase {
         this.transacoesOrigem = transacoesOrigem;
     }
 
-    public List<Transacao> getTransacaosDestino() {
-        return transacaosDestino;
+    public List<Transacao> getTransacoesDestino() {
+        return transacoesDestino;
     }
 
-    public void setTransacaosDestino(List<Transacao> transacaosDestino) {
-        this.transacaosDestino = transacaosDestino;
+    public void setTransacoesDestino(List<Transacao> transacoesDestino) {
+        this.transacoesDestino = transacoesDestino;
     }
 
     @Override

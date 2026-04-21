@@ -1,5 +1,6 @@
 package br.com.adacourse.services;
 
+import br.com.adacourse.dto.conta.ContaResponseDTO;
 import br.com.adacourse.models.Cliente;
 import br.com.adacourse.models.Conta;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -45,5 +46,25 @@ public class ContaService {
     public Conta buscarContaPorId(Long id){
         return Conta.findById(id);
     }
+
+    public Double calcularSaldo(Conta conta){
+        double saldo = 0.0;
+        // Saídas (quando a conta é origem)
+        saldo -= conta.getTransacoesOrigem().stream()
+                .mapToDouble(t -> t.getValor())
+                .sum();
+        // Entradas (quando a conta é destino)
+        saldo += conta.getTransacoesDestino().stream()
+                .mapToDouble(t -> t.getValor())
+                .sum();
+
+        return saldo;
+    }
+
+    public ContaResponseDTO converterParaDTOComSaldo(Conta conta) {
+        Double saldo = calcularSaldo(conta);
+        return ContaResponseDTO.converteParaDTO(conta, saldo);
+    }
+
 }
 
