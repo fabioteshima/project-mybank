@@ -20,7 +20,7 @@ public class AuthService {
         return Jwt.issuer("adacourse")
                 .upn(entidade.getEmail())
                 .groups(entidade.getRole().toString())
-                .expiresAt(Instant.now().plusSeconds(1800))
+                .expiresAt(Instant.now().plusSeconds(3600))
                 .sign();
     }
 }

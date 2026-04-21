@@ -2,9 +2,13 @@ package br.com.adacourse.resources;
 
 import br.com.adacourse.dto.conta.ContaCreateDTO;
 import br.com.adacourse.dto.conta.ContaResponseDTO;
+import br.com.adacourse.dto.transacao.DepositoRequestDTO;
+import br.com.adacourse.dto.transacao.TransacaoResponseDetalhadoDTO;
 import br.com.adacourse.models.Cliente;
 import br.com.adacourse.models.Conta;
+import br.com.adacourse.models.Transacao;
 import br.com.adacourse.services.ContaService;
+import br.com.adacourse.services.TransacaoService;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
@@ -16,6 +20,7 @@ import jakarta.ws.rs.core.SecurityContext;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Path("/contas")
@@ -25,6 +30,9 @@ public class ContaResource {
 
     @Inject
     ContaService contaService;
+
+    @Inject
+    TransacaoService transacaoService;
 
     @POST
     @RolesAllowed("GERENTE")
@@ -76,5 +84,24 @@ public class ContaResource {
         return Response.status(Response.Status.FORBIDDEN)
                 .entity("{\"erro\":\"Acesso não autorizado\"}")
                 .build();
+    }
+
+    @POST
+    @Path("/{id}/deposito")
+    public Response depositar(@PathParam("id") Long id, DepositoRequestDTO dto){
+        try {
+            Transacao transacao = transacaoService.depositar(id, dto.valor());
+            return Response.ok(TransacaoResponseDetalhadoDTO.converterParaDTO(transacao)).build();
+        }
+        catch (UnsupportedOperationException e){
+            return Response.status(422)
+                    .entity(Map.of("erro", e.getMessage()))
+                    .build();
+        }
+        catch (IllegalArgumentException e){
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(Map.of("erro", e.getMessage()))
+                    .build();
+        }
     }
 }

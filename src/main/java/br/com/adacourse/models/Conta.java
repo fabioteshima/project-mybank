@@ -3,6 +3,7 @@ package br.com.adacourse.models;
 import br.com.adacourse.enums.TipoConta;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
+import org.hibernate.annotations.Formula;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,16 +34,9 @@ public class Conta extends PanacheEntityBase {
     @OneToMany(mappedBy = "contaDestino")
     private List<Transacao> transacoesDestino = new ArrayList<>();
 
-    @Transient
-    public Double getSaldo() {
-        double saidas = transacoesOrigem.stream()
-                .mapToDouble(Transacao::getValor)
-                .sum();
-        double entradas = transacoesDestino.stream()
-                .mapToDouble(Transacao::getValor)
-                .sum();
-        return entradas - saidas;
-    }
+    @Formula("( (SELECT COALESCE(SUM(t.valor),0) FROM transacao t WHERE t.conta_destino_id = id) - " +
+            "(SELECT COALESCE(SUM(t.valor),0) FROM transacao t WHERE t.conta_origem_id = id) )")
+    private Double saldo;
 
     public Conta() {
     }
@@ -100,6 +94,10 @@ public class Conta extends PanacheEntityBase {
 
     public void setTransacoesDestino(List<Transacao> transacoesDestino) {
         this.transacoesDestino = transacoesDestino;
+    }
+
+    public Double getSaldo() {
+        return saldo;
     }
 
     @Override
