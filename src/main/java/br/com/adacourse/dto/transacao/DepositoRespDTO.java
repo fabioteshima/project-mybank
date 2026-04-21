@@ -1,6 +1,5 @@
 package br.com.adacourse.dto.transacao;
 
-import br.com.adacourse.dto.cliente.ClienteRespDTO;
 import br.com.adacourse.dto.cliente.ClienteRespResumoDTO;
 import br.com.adacourse.models.Conta;
 import br.com.adacourse.models.Transacao;
@@ -9,12 +8,12 @@ import java.time.LocalDateTime;
 
 public record DepositoRespDTO(
 
-    Long id,
-    String tipo,
-    Double valor,
-    Double saldoAtual,
-    LocalDateTime dataHora,
-    ContaResumoDTO conta
+        Long id,
+        String tipo,
+        Double valor,
+        Double saldoAtual,
+        LocalDateTime dataHora,
+        ContaResumoDTO conta
 
 ) {
         public static DepositoRespDTO converterParaDTO(Transacao transacao, Conta contaAtualizada) {

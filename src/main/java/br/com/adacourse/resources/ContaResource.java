@@ -107,6 +107,7 @@ public class ContaResource {
 
     @POST
     @Path("/{id}/saque")
+//    @RolesAllowed("CLIENTE")
     public Response sacar(@PathParam("id") Long id, @Valid SaqueReqDTO dto){
         try {
             Transacao transacao = transacaoService.sacar(id, dto.valor());
@@ -119,6 +120,30 @@ public class ContaResource {
                     .build();
         }
         catch (UnsupportedOperationException | IllegalStateException e){
+            return Response.status(422)
+                    .entity(Map.of("erro", e.getMessage()))
+                    .build();
+        }
+    }
+
+    @POST
+    @Path("/{id}/transferencia")
+//    @RolesAllowed("CLIENTE")
+    public Response transferir(@PathParam("id") Long contaOrigemId, @Valid TransferenciaReqDTO dto){
+        try {
+            Transacao transacao = transacaoService.transferir(contaOrigemId, dto.contaDestino().id(), dto.valor());
+            Conta contaOrigemAtualizado = Conta.findById(contaOrigemId);
+            Conta contaDestinoAtualizado = Conta.findById(dto.contaDestino().id());
+            return Response.ok(TransferenciaRespDTO.converterParaDTO(
+                    transacao, contaOrigemAtualizado, contaDestinoAtualizado))
+                    .build();
+        }
+        catch(IllegalArgumentException e){
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(Map.of("erro", e.getMessage()))
+                    .build();
+        }
+        catch (IllegalStateException e){
             return Response.status(422)
                     .entity(Map.of("erro", e.getMessage()))
                     .build();

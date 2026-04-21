@@ -8,14 +8,14 @@ import java.time.LocalDateTime;
 
 public record SaqueRespDTO(
 
-    Long id,
-    String tipo,
-    Double valor,
-    Double saldoAtual,
-    LocalDateTime dataHora,
-    ContaResumoDTO conta
-
+        Long id,
+        String tipo,
+        Double valor,
+        Double saldoAtual,
+        LocalDateTime dataHora,
+        ContaResumoDTO conta
 ) {
+
         public static SaqueRespDTO converterParaDTO(Transacao transacao, Conta contaAtualizada) {
             return new SaqueRespDTO(
                     transacao.getId(),

@@ -17,21 +17,21 @@ public record ContaRespDTO(
         ClienteRespDTO titular,
         List<TransacaoRespResumidoDTO> transacoes) {
 
-    public static ContaRespDTO converteParaDTO(Conta conta){
-        List<TransacaoRespResumidoDTO> todasTransacoes = Stream.concat(
-                conta.getTransacoesOrigem().stream(),
-                conta.getTransacoesDestino().stream())
-                .map(TransacaoRespResumidoDTO::converterParaDTO)
-                .collect(Collectors.toList());
+        public static ContaRespDTO converteParaDTO(Conta conta){
+            List<TransacaoRespResumidoDTO> todasTransacoes = Stream.concat(
+                    conta.getTransacoesOrigem().stream(),
+                    conta.getTransacoesDestino().stream())
+                    .map(TransacaoRespResumidoDTO::converterParaDTO)
+                    .collect(Collectors.toList());
 
-        return new ContaRespDTO(
-                conta.getId(),
-                conta.getNumero(),
-                conta.getTipo(),
-                conta.getSaldo(),
-                ClienteRespDTO.converterParaDTO(conta.getTitular()),
-                todasTransacoes
-        );
-    }
+            return new ContaRespDTO(
+                    conta.getId(),
+                    conta.getNumero(),
+                    conta.getTipo(),
+                    conta.getSaldo(),
+                    ClienteRespDTO.converterParaDTO(conta.getTitular()),
+                    todasTransacoes
+            );
+        }
 }
 

@@ -43,7 +43,7 @@ public class TransacaoService {
     public Transacao sacar(Long contaId, Double valor){
         Conta entidade = Conta.findById(contaId);
         if(entidade == null){
-            throw new IllegalArgumentException("Conta não encontrada");
+            throw new IllegalArgumentException("ContaId não encontrada");
         }
         if(entidade.getTipo() == TipoConta.ELETRONICA){
             throw new UnsupportedOperationException(("Conta do tipo ELETRONICA não permite saques"));
@@ -60,6 +60,33 @@ public class TransacaoService {
         transacao.persist();
         em.flush();
         em.refresh(entidade);
+        return transacao;
+    }
+
+    @Transactional
+    public Transacao transferir(Long contaOrigemId, Long contaDestinoId, Double valor){
+        Conta contaOrigem = Conta.findById(contaOrigemId);
+        if((contaOrigem == null)){
+            throw new IllegalArgumentException("ContaId origem não encontrado");
+        }
+        Conta contaDestino = Conta.findById(contaDestinoId);
+        if((contaDestino == null)){
+            throw new IllegalArgumentException("ContaId destino não encontrado");
+        }
+        if (contaOrigem.getSaldo() < valor) {
+            throw new IllegalStateException("Saldo insuficiente para realizar a transferência");
+        }
+        Transacao transacao = new Transacao();
+        transacao.setTipo(TipoTransacao.TRANSFERENCIA);
+        transacao.setValor(valor);
+        transacao.setDataHora(LocalDateTime.now());
+        transacao.setContaOrigem(contaOrigem);
+        transacao.setContaDestino(contaDestino);
+        transacao.persist();
+        em.flush();
+        // Recarrega as contas para atualizar saldo via @Formula
+        em.refresh(contaOrigem);
+        em.refresh(contaDestino);
         return transacao;
     }
 
