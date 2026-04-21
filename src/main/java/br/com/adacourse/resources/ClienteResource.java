@@ -43,7 +43,7 @@ public class ClienteResource {
     }
 
     @GET
-    @PermitAll
+    @RolesAllowed("GERENTE")
     public Response listarClientes(){
         List<ClienteResponseDTO> lista = service.listarClientes()
                 .stream()
@@ -54,7 +54,7 @@ public class ClienteResource {
 
     @GET
     @Path("/{id}")
-    @PermitAll
+    @RolesAllowed("GERENTE")
     public Response buscarClientePorId(@PathParam("id") Long id){
         Cliente entidade = service.buscarClientePorId(id);
         if (entidade == null) {
@@ -78,7 +78,7 @@ public class ClienteResource {
             Cliente atualizado = service.atualizarCliente(id, entidade);
             if (atualizado == null) {
                 return Response.status(Response.Status.NOT_FOUND)
-                        .entity("{\"erro\":\"Cliente não encontrado\"}")
+                        .entity("{\"erro\":\"Cliente Id não encontrado\"}")
                         .build();
             }
             return Response.ok(ClienteResponseDTO.converterParaDTO(atualizado)).build();

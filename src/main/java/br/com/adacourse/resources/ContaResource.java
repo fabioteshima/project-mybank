@@ -10,8 +10,10 @@ import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.SecurityContext;
 
 import java.net.URI;
 import java.util.List;
@@ -48,7 +50,7 @@ public class ContaResource {
     }
 
     @GET
-    @PermitAll
+    @RolesAllowed("GERENTE")
     public Response listarContas(){
         List<ContaResponseDTO> lista = service.listarContas()
                 .stream()
@@ -59,14 +61,23 @@ public class ContaResource {
 
     @GET
     @Path("/{id}")
-    @PermitAll
-    public Response buscarContaPorId(@PathParam("id") Long id){
+    @RolesAllowed({"GERENTE", "CLIENTE"})
+    public Response buscarContaPorId(@PathParam("id") Long id, @Context SecurityContext sc){
         Conta entidade = service.buscarContaPorId(id);
         if(entidade == null){
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity("{\"erro\":\"Conta não encontrada\"}")
+                    .entity("{\"erro\":\"Conta Id não encontrada\"}")
                     .build();
         }
-        return Response.ok(ContaResponseDTO.converteParaDTO(entidade)).build();
+        String usuarioLogado = sc.getUserPrincipal().getName();
+        if (sc.isUserInRole("GERENTE")) {
+            return Response.ok(ContaResponseDTO.converteParaDTO(entidade)).build();
+        }
+        if (sc.isUserInRole("CLIENTE") && entidade.getTitular().getEmail().equals(usuarioLogado)) {
+            return Response.ok(ContaResponseDTO.converteParaDTO(entidade)).build();
+        }
+        return Response.status(Response.Status.FORBIDDEN)
+                .entity("{\"erro\":\"Acesso não autorizado\"}")
+                .build();
     }
 }
