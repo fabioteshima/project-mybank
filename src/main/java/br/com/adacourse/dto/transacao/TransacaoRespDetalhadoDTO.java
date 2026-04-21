@@ -1,6 +1,6 @@
 package br.com.adacourse.dto.transacao;
 
-import br.com.adacourse.dto.cliente.ClienteResponseDTO;
+import br.com.adacourse.dto.cliente.ClienteRespDTO;
 import br.com.adacourse.enums.TipoConta;
 import br.com.adacourse.enums.TipoTransacao;
 import br.com.adacourse.models.Conta;
@@ -8,7 +8,7 @@ import br.com.adacourse.models.Transacao;
 
 import java.time.LocalDateTime;
 
-public record TransacaoResponseDetalhadoDTO(
+public record TransacaoRespDetalhadoDTO(
         Long id,
         TipoTransacao tipo,
         Double valor,
@@ -19,13 +19,13 @@ public record TransacaoResponseDetalhadoDTO(
 ) {
 
     // Conversão detalhada (para TransacaoResource)
-    public static TransacaoResponseDetalhadoDTO converterParaDTO(Transacao transacao){
+    public static TransacaoRespDetalhadoDTO converterParaDTO(Transacao transacao){
         Conta contaOrigem = transacao.getContaOrigem();
         Conta contaDestino = transacao.getContaDestino();
 
         Double saldoAtual = contaDestino != null ? contaDestino.getSaldo() : null;
 
-        return new TransacaoResponseDetalhadoDTO(
+        return new TransacaoRespDetalhadoDTO(
                 transacao.getId(),
                 transacao.getTipo(),
                 transacao.getValor(),
@@ -37,13 +37,13 @@ public record TransacaoResponseDetalhadoDTO(
     }
 
     // DTO simplificado da conta
-    public record ContaResumoDTO(Long id, String numero, TipoConta tipo, ClienteResponseDTO titular) {
+    public record ContaResumoDTO(Long id, String numero, TipoConta tipo, ClienteRespDTO titular) {
         public static ContaResumoDTO converter(Conta conta) {
             return new ContaResumoDTO(
                     conta.getId(),
                     conta.getNumero(),
                     conta.getTipo(),
-                    ClienteResponseDTO.converterParaDTO(conta.getTitular())
+                    ClienteRespDTO.converterParaDTO(conta.getTitular())
             );
         }
     }

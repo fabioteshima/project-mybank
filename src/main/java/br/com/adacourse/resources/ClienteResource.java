@@ -1,15 +1,13 @@
 package br.com.adacourse.resources;
 
-import br.com.adacourse.dto.cliente.ClienteCreateDTO;
-import br.com.adacourse.dto.cliente.ClienteResponseDTO;
+import br.com.adacourse.dto.cliente.ClienteReqDTO;
+import br.com.adacourse.dto.cliente.ClienteRespDTO;
 import br.com.adacourse.dto.cliente.ClienteUpdateDTO;
 import br.com.adacourse.enums.TipoCliente;
 import br.com.adacourse.models.Cliente;
 import br.com.adacourse.services.ClienteService;
-import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -29,7 +27,7 @@ public class ClienteResource {
 
     @POST
     @RolesAllowed("GERENTE")
-    public Response cadastrarCliente(@Valid ClienteCreateDTO dto){
+    public Response cadastrarCliente(@Valid ClienteReqDTO dto){
         Cliente entidade = new Cliente();
         entidade.setNome(dto.nome());
         entidade.setCpf(dto.cpf());
@@ -38,16 +36,16 @@ public class ClienteResource {
         entidade.setRole(TipoCliente.CLIENTE);
 
         Cliente criado = clienteService.cadastrarCliente(entidade);
-        ClienteResponseDTO responseDTO = ClienteResponseDTO.converterParaDTO(criado);
+        ClienteRespDTO responseDTO = ClienteRespDTO.converterParaDTO(criado);
         return Response.created(URI.create("/clientes/" + criado.getId())).entity(responseDTO).build();
     }
 
     @GET
     @RolesAllowed("GERENTE")
     public Response listarClientes(){
-        List<ClienteResponseDTO> lista = clienteService.listarClientes()
+        List<ClienteRespDTO> lista = clienteService.listarClientes()
                 .stream()
-                .map(ClienteResponseDTO::converterParaDTO)
+                .map(ClienteRespDTO::converterParaDTO)
                 .collect(Collectors.toList());
         return Response.ok(lista).build();
     }
@@ -62,7 +60,7 @@ public class ClienteResource {
                     .entity("{\"erro\":\"Cliente não encontrado\"}")
                     .build();
         }
-        return Response.ok(ClienteResponseDTO.converterParaDTO(entidade)).build();
+        return Response.ok(ClienteRespDTO.converterParaDTO(entidade)).build();
     }
 
     @PUT
@@ -81,7 +79,7 @@ public class ClienteResource {
                         .entity("{\"erro\":\"Cliente Id não encontrado\"}")
                         .build();
             }
-            return Response.ok(ClienteResponseDTO.converterParaDTO(atualizado)).build();
+            return Response.ok(ClienteRespDTO.converterParaDTO(atualizado)).build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("{\"erro\":\"" + e.getMessage() + "\"}")

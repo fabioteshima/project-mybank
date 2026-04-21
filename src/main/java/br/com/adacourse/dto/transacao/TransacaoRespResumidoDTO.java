@@ -5,7 +5,7 @@ import br.com.adacourse.models.Transacao;
 
 import java.time.LocalDateTime;
 
-public record TransacaoResponseResumidoDTO(
+public record TransacaoRespResumidoDTO(
         Long id,
         TipoTransacao tipo,
         Double valor,
@@ -13,8 +13,8 @@ public record TransacaoResponseResumidoDTO(
 ) {
 
     // Versão resumida para ContaResponseDTO
-    public static TransacaoResponseResumidoDTO converterParaDTO(Transacao transacao){
-        return new TransacaoResponseResumidoDTO(
+    public static TransacaoRespResumidoDTO converterParaDTO(Transacao transacao){
+        return new TransacaoRespResumidoDTO(
                 transacao.getId(),
                 transacao.getTipo(),
                 transacao.getValor(),

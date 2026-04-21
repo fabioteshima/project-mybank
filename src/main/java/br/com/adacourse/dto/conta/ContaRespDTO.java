@@ -1,7 +1,7 @@
 package br.com.adacourse.dto.conta;
 
-import br.com.adacourse.dto.cliente.ClienteResponseDTO;
-import br.com.adacourse.dto.transacao.TransacaoResponseResumidoDTO;
+import br.com.adacourse.dto.cliente.ClienteRespDTO;
+import br.com.adacourse.dto.transacao.TransacaoRespResumidoDTO;
 import br.com.adacourse.enums.TipoConta;
 import br.com.adacourse.models.Conta;
 
@@ -9,27 +9,27 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public record ContaResponseDTO(
+public record ContaRespDTO(
         Long id,
         String numero,
         TipoConta tipo,
         Double saldo,
-        ClienteResponseDTO titular,
-        List<TransacaoResponseResumidoDTO> transacoes) {
+        ClienteRespDTO titular,
+        List<TransacaoRespResumidoDTO> transacoes) {
 
-    public static ContaResponseDTO converteParaDTO(Conta conta){
-        List<TransacaoResponseResumidoDTO> todasTransacoes = Stream.concat(
+    public static ContaRespDTO converteParaDTO(Conta conta){
+        List<TransacaoRespResumidoDTO> todasTransacoes = Stream.concat(
                 conta.getTransacoesOrigem().stream(),
                 conta.getTransacoesDestino().stream())
-                .map(TransacaoResponseResumidoDTO::converterParaDTO)
+                .map(TransacaoRespResumidoDTO::converterParaDTO)
                 .collect(Collectors.toList());
 
-        return new ContaResponseDTO(
+        return new ContaRespDTO(
                 conta.getId(),
                 conta.getNumero(),
                 conta.getTipo(),
                 conta.getSaldo(),
-                ClienteResponseDTO.converterParaDTO(conta.getTitular()),
+                ClienteRespDTO.converterParaDTO(conta.getTitular()),
                 todasTransacoes
         );
     }

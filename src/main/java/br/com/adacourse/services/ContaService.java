@@ -1,6 +1,5 @@
 package br.com.adacourse.services;
 
-import br.com.adacourse.dto.conta.ContaResponseDTO;
 import br.com.adacourse.models.Cliente;
 import br.com.adacourse.models.Conta;
 import jakarta.enterprise.context.ApplicationScoped;

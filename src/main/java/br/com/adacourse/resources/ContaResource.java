@@ -1,9 +1,10 @@
 package br.com.adacourse.resources;
 
-import br.com.adacourse.dto.conta.ContaCreateDTO;
-import br.com.adacourse.dto.conta.ContaResponseDTO;
-import br.com.adacourse.dto.transacao.DepositoRequestDTO;
-import br.com.adacourse.dto.transacao.TransacaoResponseDetalhadoDTO;
+import br.com.adacourse.dto.conta.ContaReqDTO;
+import br.com.adacourse.dto.conta.ContaRespDTO;
+import br.com.adacourse.dto.transacao.DepositoReqDTO;
+import br.com.adacourse.dto.transacao.DepositoRespDTO;
+import br.com.adacourse.dto.transacao.TransacaoRespDetalhadoDTO;
 import br.com.adacourse.models.Cliente;
 import br.com.adacourse.models.Conta;
 import br.com.adacourse.models.Transacao;
@@ -36,7 +37,7 @@ public class ContaResource {
 
     @POST
     @RolesAllowed("GERENTE")
-    public Response criarConta(@Valid ContaCreateDTO dto){
+    public Response criarConta(@Valid ContaReqDTO dto){
         try {
             Conta entidade = new Conta();
             entidade.setTipo(dto.tipo());
@@ -45,7 +46,7 @@ public class ContaResource {
             entidade.setTitular(titular);
 
             Conta criada = contaService.criarConta(entidade);
-            ContaResponseDTO responseDTO = ContaResponseDTO.converteParaDTO(criada);
+            ContaRespDTO responseDTO = ContaRespDTO.converteParaDTO(criada);
             return Response.created(URI.create("/contas/" + criada.getId())).entity(responseDTO).build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST)
@@ -57,9 +58,9 @@ public class ContaResource {
     @GET
     @RolesAllowed("GERENTE")
     public Response listarContas(){
-        List<ContaResponseDTO> lista = contaService.listarContas()
+        List<ContaRespDTO> lista = contaService.listarContas()
                 .stream()
-                .map(ContaResponseDTO::converteParaDTO)
+                .map(ContaRespDTO::converteParaDTO)
                 .collect(Collectors.toList());
         return Response.ok(lista).build();
     }
@@ -76,10 +77,10 @@ public class ContaResource {
         }
         String usuarioLogado = sc.getUserPrincipal().getName();
         if (sc.isUserInRole("GERENTE")) {
-            return Response.ok(ContaResponseDTO.converteParaDTO(entidade)).build();
+            return Response.ok(ContaRespDTO.converteParaDTO(entidade)).build();
         }
         if (sc.isUserInRole("CLIENTE") && entidade.getTitular().getEmail().equals(usuarioLogado)) {
-            return Response.ok(ContaResponseDTO.converteParaDTO(entidade)).build();
+            return Response.ok(ContaRespDTO.converteParaDTO(entidade)).build();
         }
         return Response.status(Response.Status.FORBIDDEN)
                 .entity("{\"erro\":\"Acesso não autorizado\"}")
@@ -88,10 +89,11 @@ public class ContaResource {
 
     @POST
     @Path("/{id}/deposito")
-    public Response depositar(@PathParam("id") Long id, DepositoRequestDTO dto){
+    public Response depositar(@PathParam("id") Long id, @Valid DepositoReqDTO dto){
         try {
             Transacao transacao = transacaoService.depositar(id, dto.valor());
-            return Response.ok(TransacaoResponseDetalhadoDTO.converterParaDTO(transacao)).build();
+            Conta contaAtualizada = Conta.findById(id);
+            return Response.ok(DepositoRespDTO.converterParaDTO(transacao, contaAtualizada)).build();
         }
         catch (UnsupportedOperationException e){
             return Response.status(422)

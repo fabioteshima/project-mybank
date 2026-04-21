@@ -1,9 +1,9 @@
 package br.com.adacourse.resources;
 
-import br.com.adacourse.dto.transacao.TransacaoResponseDetalhadoDTO;
+import br.com.adacourse.dto.transacao.TransacaoRespDetalhadoDTO;
 import br.com.adacourse.models.Transacao;
 import br.com.adacourse.services.TransacaoService;
-import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -20,30 +20,18 @@ public class TransacaoResource {
     @Inject
     TransacaoService service;
 
-//    @POST
-//    public Response cadastrarTransacao(TransacaoRequestDTO dto){
-//        Transacao entidade = new Transacao();
-//        entidade.setTipo(dto.tipo());
-//
-//
-//        // Continuar aqui......
-//
-//
-//        return null;
-//    }
-
     @GET
-    @PermitAll
+    @RolesAllowed("GERENTE")
     public Response listarTransacoes(){
-        List<TransacaoResponseDetalhadoDTO> transacoes = service.listarTransacoes().stream()
-                .map(TransacaoResponseDetalhadoDTO::converterParaDTO)
+        List<TransacaoRespDetalhadoDTO> transacoes = service.listarTransacoes().stream()
+                .map(TransacaoRespDetalhadoDTO::converterParaDTO)
                 .collect(Collectors.toList());
         return Response.ok(transacoes).build();
     }
 
     @GET
     @Path("/{id}")
-    @PermitAll
+    @RolesAllowed("GERENTE")
     public Response buscarTransacaoPorId(@PathParam("id") Long id){
         Transacao entidade = service.buscarTransacaoPorId(id);
         if(entidade == null){
@@ -51,6 +39,6 @@ public class TransacaoResource {
                     .entity("{\"erro\":\"Transação não encontrada\"}")
                     .build();
         }
-        return Response.ok(TransacaoResponseDetalhadoDTO.converterParaDTO(entidade)).build();
+        return Response.ok(TransacaoRespDetalhadoDTO.converterParaDTO(entidade)).build();
     }
 }
