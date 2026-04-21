@@ -36,7 +36,30 @@ public class TransacaoService {
         transacao.persist();
         em.flush();
         em.refresh(entidade); // força recarregar do banco
-        Double saldoAtual = entidade.getSaldo();
+        return transacao;
+    }
+
+    @Transactional
+    public Transacao sacar(Long contaId, Double valor){
+        Conta entidade = Conta.findById(contaId);
+        if(entidade == null){
+            throw new IllegalArgumentException("Conta não encontrada");
+        }
+        if(entidade.getTipo() == TipoConta.ELETRONICA){
+            throw new UnsupportedOperationException(("Conta do tipo ELETRONICA não permite saques"));
+        }
+        if(entidade.getSaldo() < valor){
+            throw new IllegalStateException("Saldo insuficiente para realizar o saque");
+        }
+
+        Transacao transacao = new Transacao();
+        transacao.setTipo(TipoTransacao.SAQUE);
+        transacao.setValor(valor);
+        transacao.setDataHora(LocalDateTime.now());
+        transacao.setContaOrigem(entidade);
+        transacao.persist();
+        em.flush();
+        em.refresh(entidade);
         return transacao;
     }
 

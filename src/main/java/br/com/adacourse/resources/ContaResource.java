@@ -2,9 +2,7 @@ package br.com.adacourse.resources;
 
 import br.com.adacourse.dto.conta.ContaReqDTO;
 import br.com.adacourse.dto.conta.ContaRespDTO;
-import br.com.adacourse.dto.transacao.DepositoReqDTO;
-import br.com.adacourse.dto.transacao.DepositoRespDTO;
-import br.com.adacourse.dto.transacao.TransacaoRespDetalhadoDTO;
+import br.com.adacourse.dto.transacao.*;
 import br.com.adacourse.models.Cliente;
 import br.com.adacourse.models.Conta;
 import br.com.adacourse.models.Transacao;
@@ -102,6 +100,26 @@ public class ContaResource {
         }
         catch (IllegalArgumentException e){
             return Response.status(Response.Status.NOT_FOUND)
+                    .entity(Map.of("erro", e.getMessage()))
+                    .build();
+        }
+    }
+
+    @POST
+    @Path("/{id}/saque")
+    public Response sacar(@PathParam("id") Long id, @Valid SaqueReqDTO dto){
+        try {
+            Transacao transacao = transacaoService.sacar(id, dto.valor());
+            Conta contaAtualizada = Conta.findById(id);
+            return Response.ok(SaqueRespDTO.converterParaDTO(transacao, contaAtualizada)).build();
+        }
+        catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(Map.of("erro", e.getMessage()))
+                    .build();
+        }
+        catch (UnsupportedOperationException | IllegalStateException e){
+            return Response.status(422)
                     .entity(Map.of("erro", e.getMessage()))
                     .build();
         }
