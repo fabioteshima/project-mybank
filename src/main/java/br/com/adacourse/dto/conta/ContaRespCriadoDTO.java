@@ -4,12 +4,14 @@ import br.com.adacourse.dto.cliente.ClienteRespDTO;
 import br.com.adacourse.enums.TipoConta;
 import br.com.adacourse.models.Conta;
 
+import java.math.BigDecimal;
+
 public record ContaRespCriadoDTO(
 
         Long id,
         String numero,
         TipoConta tipo,
-        Double Saldo,
+        BigDecimal Saldo,
         ClienteRespDTO titular
 ) {
 

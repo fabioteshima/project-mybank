@@ -9,6 +9,7 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -19,7 +20,7 @@ public class TransacaoService {
     EntityManager em;
 
     @Transactional
-    public Transacao depositar(Long contaId, Double valor){
+    public Transacao depositar(Long contaId, BigDecimal valor){
         Conta entidade = Conta.findById(contaId);
         if(entidade == null){
             throw new IllegalArgumentException("Conta não encontrada");
@@ -40,7 +41,7 @@ public class TransacaoService {
     }
 
     @Transactional
-    public Transacao sacar(Long contaId, Double valor){
+    public Transacao sacar(Long contaId, BigDecimal valor){
         Conta entidade = Conta.findById(contaId);
         if(entidade == null){
             throw new IllegalArgumentException("ContaId não encontrada");
@@ -48,7 +49,7 @@ public class TransacaoService {
         if(entidade.getTipo() == TipoConta.ELETRONICA){
             throw new UnsupportedOperationException(("Conta do tipo ELETRONICA não permite saques"));
         }
-        if(entidade.getSaldo() < valor){
+        if(entidade.getSaldo().compareTo(valor) < 0){
             throw new IllegalStateException("Saldo insuficiente para realizar o saque");
         }
 
@@ -64,7 +65,7 @@ public class TransacaoService {
     }
 
     @Transactional
-    public Transacao transferir(Long contaOrigemId, Long contaDestinoId, Double valor){
+    public Transacao transferir(Long contaOrigemId, Long contaDestinoId, BigDecimal valor){
         Conta contaOrigem = Conta.findById(contaOrigemId);
         if((contaOrigem == null)){
             throw new IllegalArgumentException("ContaId origem não encontrado");
@@ -73,7 +74,7 @@ public class TransacaoService {
         if((contaDestino == null)){
             throw new IllegalArgumentException("ContaId destino não encontrado");
         }
-        if (contaOrigem.getSaldo() < valor) {
+        if (contaOrigem.getSaldo().compareTo(valor) < 0) {
             throw new IllegalStateException("Saldo insuficiente para realizar a transferência");
         }
         Transacao transacao = new Transacao();

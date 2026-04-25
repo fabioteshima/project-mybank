@@ -6,6 +6,7 @@ import br.com.adacourse.enums.TipoConta;
 import br.com.adacourse.models.Conta;
 import br.com.adacourse.models.Transacao;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -18,7 +19,7 @@ public record ContaRespDetalhadoDTO(
         Long id,
         String numero,
         TipoConta tipo,
-        Double saldo,
+        BigDecimal saldo,
         ClienteRespDTO titular,
         List<TransacaoRespResumidoDTO> transacoes,
         Map<String, String> _links) {

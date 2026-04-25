@@ -7,6 +7,7 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @ApplicationScoped
@@ -29,7 +30,7 @@ public class ContaService {
         }
         conta.setTitular(titular);
         conta.setNumero("0000-0");
-        conta.setSaldo(0.0);
+        conta.setSaldo(BigDecimal.ZERO);
         em.persist(conta);
         em.flush();
         String principal = String.format("%04d", conta.getId());

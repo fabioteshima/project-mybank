@@ -5,14 +5,15 @@ import br.com.adacourse.enums.TipoTransacao;
 import br.com.adacourse.models.Conta;
 import br.com.adacourse.models.Transacao;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public record TransacaoRespDetalhadoDTO(
 
         Long id,
         TipoTransacao tipo,
-        Double valor,
-        Double saldoAtual,
+        BigDecimal valor,
+        BigDecimal saldoAtual,
         LocalDateTime dataHora,
         ContaRespResumidoDTO conta,
         ContaRespResumidoDTO contaDestino
@@ -23,7 +24,7 @@ public record TransacaoRespDetalhadoDTO(
             Conta contaOrigem = transacao.getContaOrigem();
             Conta contaDestino = transacao.getContaDestino();
 
-            Double saldoAtual = contaDestino != null ? contaDestino.getSaldo() : null;
+            BigDecimal saldoAtual = contaDestino != null ? contaDestino.getSaldo() : null;
 
             return new TransacaoRespDetalhadoDTO(
                     transacao.getId(),

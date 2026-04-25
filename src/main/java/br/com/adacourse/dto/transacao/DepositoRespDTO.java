@@ -4,14 +4,15 @@ import br.com.adacourse.dto.cliente.ClienteRespResumoDTO;
 import br.com.adacourse.models.Conta;
 import br.com.adacourse.models.Transacao;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public record DepositoRespDTO(
 
         Long id,
         String tipo,
-        Double valor,
-        Double saldoAtual,
+        BigDecimal valor,
+        BigDecimal saldoAtual,
         LocalDateTime dataHora,
         ContaResumoDTO conta
 

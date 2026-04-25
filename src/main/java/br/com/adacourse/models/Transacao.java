@@ -4,6 +4,7 @@ import br.com.adacourse.enums.TipoTransacao;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -17,7 +18,7 @@ public class Transacao extends PanacheEntityBase {
     @Enumerated(EnumType.STRING)
     private TipoTransacao tipo;
 
-    private Double valor;
+    private BigDecimal valor;
 
     @Column(name = "data_hora")
     private LocalDateTime dataHora;
@@ -33,7 +34,7 @@ public class Transacao extends PanacheEntityBase {
     public Transacao() {
     }
 
-    public Transacao(Long id, TipoTransacao tipo, Double valor, LocalDateTime dataHora, Conta conta_origem_id, Conta conta_destino_id) {
+    public Transacao(Long id, TipoTransacao tipo, BigDecimal valor, LocalDateTime dataHora, Conta conta_origem_id, Conta conta_destino_id) {
         this.id = id;
         this.tipo = tipo;
         this.valor = valor;
@@ -58,11 +59,11 @@ public class Transacao extends PanacheEntityBase {
         this.tipo = tipo;
     }
 
-    public Double getValor() {
+    public BigDecimal getValor() {
         return valor;
     }
 
-    public void setValor(Double valor) {
+    public void setValor(BigDecimal valor) {
         this.valor = valor;
     }
 

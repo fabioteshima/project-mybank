@@ -5,14 +5,15 @@ import br.com.adacourse.enums.TipoTransacao;
 import br.com.adacourse.models.Conta;
 import br.com.adacourse.models.Transacao;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public record TransferenciaRespDTO(
 
         Long id,
         TipoTransacao transacao,
-        Double valor,
-        Double saldoAtual,
+        BigDecimal valor,
+        BigDecimal saldoAtual,
         LocalDateTime dataHora,
         ContaResumoDTO contaOrigem,
         ContaResumoDTO contaDestino

@@ -5,6 +5,7 @@ import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Formula;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -36,7 +37,7 @@ public class Conta extends PanacheEntityBase {
 
     @Formula("( (SELECT COALESCE(SUM(t.valor),0) FROM transacao t WHERE t.conta_destino_id = id) - " +
             "(SELECT COALESCE(SUM(t.valor),0) FROM transacao t WHERE t.conta_origem_id = id) )")
-    private Double saldo;
+    private BigDecimal saldo;
 
     public Conta() {
     }
@@ -96,11 +97,11 @@ public class Conta extends PanacheEntityBase {
         this.transacoesDestino = transacoesDestino;
     }
 
-    public Double getSaldo() {
+    public BigDecimal getSaldo() {
         return saldo;
     }
 
-    public void setSaldo(Double saldo) {
+    public void setSaldo(BigDecimal saldo) {
         this.saldo = saldo;
     }
 
