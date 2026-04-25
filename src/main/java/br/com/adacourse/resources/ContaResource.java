@@ -1,7 +1,8 @@
 package br.com.adacourse.resources;
 
 import br.com.adacourse.dto.conta.ContaReqDTO;
-import br.com.adacourse.dto.conta.ContaRespDTO;
+import br.com.adacourse.dto.conta.ContaRespCriadoDTO;
+import br.com.adacourse.dto.conta.ContaRespDetalhadoDTO;
 import br.com.adacourse.dto.transacao.*;
 import br.com.adacourse.models.Cliente;
 import br.com.adacourse.models.Conta;
@@ -44,11 +45,16 @@ public class ContaResource {
             entidade.setTitular(titular);
 
             Conta criada = contaService.criarConta(entidade);
-            ContaRespDTO responseDTO = ContaRespDTO.converteParaDTO(criada);
+            ContaRespCriadoDTO responseDTO = ContaRespCriadoDTO.converterParaDTO(criada);
             return Response.created(URI.create("/contas/" + criada.getId())).entity(responseDTO).build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("{\"erro\":\"" + e.getMessage() + "\"}")
+                    .build();
+        }
+        catch (NotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("{\"erro\":\"Conta não encontrada\"}")
                     .build();
         }
     }
@@ -56,9 +62,9 @@ public class ContaResource {
     @GET
     @RolesAllowed("GERENTE")
     public Response listarContas(){
-        List<ContaRespDTO> lista = contaService.listarContas()
+        List<ContaRespDetalhadoDTO> lista = contaService.listarContas()
                 .stream()
-                .map(ContaRespDTO::converteParaDTO)
+                .map(ContaRespDetalhadoDTO::converteParaDTO)
                 .collect(Collectors.toList());
         return Response.ok(lista).build();
     }
@@ -75,10 +81,10 @@ public class ContaResource {
         }
         String usuarioLogado = sc.getUserPrincipal().getName();
         if (sc.isUserInRole("GERENTE")) {
-            return Response.ok(ContaRespDTO.converteParaDTO(entidade)).build();
+            return Response.ok(ContaRespDetalhadoDTO.converteParaDTO(entidade)).build();
         }
         if (sc.isUserInRole("CLIENTE") && entidade.getTitular().getEmail().equals(usuarioLogado)) {
-            return Response.ok(ContaRespDTO.converteParaDTO(entidade)).build();
+            return Response.ok(ContaRespDetalhadoDTO.converteParaDTO(entidade)).build();
         }
         return Response.status(Response.Status.FORBIDDEN)
                 .entity("{\"erro\":\"Acesso não autorizado\"}")
@@ -107,7 +113,7 @@ public class ContaResource {
 
     @POST
     @Path("/{id}/saque")
-//    @RolesAllowed("CLIENTE")
+    @RolesAllowed("CLIENTE")
     public Response sacar(@PathParam("id") Long id, @Valid SaqueReqDTO dto){
         try {
             Transacao transacao = transacaoService.sacar(id, dto.valor());
@@ -128,7 +134,7 @@ public class ContaResource {
 
     @POST
     @Path("/{id}/transferencia")
-//    @RolesAllowed("CLIENTE")
+    @RolesAllowed("CLIENTE")
     public Response transferir(@PathParam("id") Long contaOrigemId, @Valid TransferenciaReqDTO dto){
         try {
             Transacao transacao = transacaoService.transferir(contaOrigemId, dto.contaDestino().id(), dto.valor());

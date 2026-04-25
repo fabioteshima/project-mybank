@@ -25,7 +25,7 @@ public class TransacaoService {
             throw new IllegalArgumentException("Conta não encontrada");
         }
         if(entidade.getTipo() == TipoConta.ELETRONICA){
-            throw new UnsupportedOperationException(("Não disponível para contas do tipo ELETRONICA"));
+            throw new UnsupportedOperationException(("Conta do tipo ELETRONICA não permite depósitos."));
         }
 
         Transacao transacao = new Transacao();
@@ -96,5 +96,14 @@ public class TransacaoService {
 
     public Transacao buscarTransacaoPorId(Long id){
       return Transacao.findById(id);
+    }
+
+    public List<Transacao> buscarTransacoesPorConta(Long contaId) {
+        return em.createQuery(
+                        "SELECT t FROM Transacao t " +
+                                "WHERE t.contaOrigem.id = :contaId OR t.contaDestino.id = :contaId " +
+                                "ORDER BY t.dataHora ASC", Transacao.class)
+                .setParameter("contaId", contaId)
+                .getResultList();
     }
 }

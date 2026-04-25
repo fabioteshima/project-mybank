@@ -100,6 +100,10 @@ public class Conta extends PanacheEntityBase {
         return saldo;
     }
 
+    public void setSaldo(Double saldo) {
+        this.saldo = saldo;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;

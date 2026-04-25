@@ -9,6 +9,7 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,16 +23,25 @@ public class TransacaoResource {
 
     @GET
     @RolesAllowed("GERENTE")
-    public Response listarTransacoes(){
-        List<TransacaoRespDetalhadoDTO> transacoes = service.listarTransacoes().stream()
-                .map(TransacaoRespDetalhadoDTO::converterParaDTO)
-                .collect(Collectors.toList());
-        return Response.ok(transacoes).build();
+    public Response buscarTransacoes(@QueryParam("contaId") Long contaId) {
+        if (contaId != null) {
+            List<Transacao> transacoes = service.buscarTransacoesPorConta(contaId);
+            List<TransacaoRespDetalhadoDTO> historico = transacoes.stream()
+                    .sorted(Comparator.comparing(Transacao::getDataHora))
+                    .map(TransacaoRespDetalhadoDTO::converterParaDTO)
+                    .collect(Collectors.toList());
+            return Response.ok(historico).build();
+        } else {
+              List<TransacaoRespDetalhadoDTO> transacoes = service.listarTransacoes().stream()
+                    .map(TransacaoRespDetalhadoDTO::converterParaDTO)
+                    .collect(Collectors.toList());
+            return Response.ok(transacoes).build();
+        }
     }
 
     @GET
     @Path("/{id}")
-    @RolesAllowed("GERENTE")
+    @RolesAllowed({"GERENTE", "CLIENTE"})
     public Response buscarTransacaoPorId(@PathParam("id") Long id){
         Transacao entidade = service.buscarTransacaoPorId(id);
         if(entidade == null){

@@ -29,6 +29,7 @@ public class ContaService {
         }
         conta.setTitular(titular);
         conta.setNumero("0000-0");
+        conta.setSaldo(0.0);
         em.persist(conta);
         em.flush();
         String principal = String.format("%04d", conta.getId());
